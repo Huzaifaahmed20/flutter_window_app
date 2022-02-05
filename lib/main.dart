@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart' as material;
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,9 +10,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FluentApp(
-      debugShowCheckedModeBanner: false,
+    return MaterialApp(
       title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
       home: MyHomePage(),
     );
   }
@@ -68,27 +68,21 @@ class _MyHomePageState extends State<MyHomePage> {
     final bodyController = TextEditingController();
     return showDialog(
       context: context,
-      builder: (_) => ContentDialog(
+      builder: (_) => AlertDialog(
         title: Text('Add post'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextBox(
-              controller: titleController,
-              placeholder: "Title",
-            ),
-            TextBox(
-              controller: bodyController,
-              placeholder: "Body",
-            ),
+            TextField(controller: titleController),
+            TextField(controller: bodyController),
           ],
         ),
         actions: [
-          Button(
+          TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text('Cancel'),
           ),
-          Button(
+          TextButton(
             onPressed: () =>
                 addPost(title: titleController.text, body: bodyController.text),
             child: Text('Save'),
@@ -100,40 +94,30 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return NavigationView(
-      appBar: NavigationAppBar(
-        title: Text("Windows Posts"),
-        actions: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            alignment: Alignment.centerRight,
-            child: Button(
-              onPressed: showAddpostDialog,
-              child: Text('Add Post'),
-            ),
-          ),
-        ),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showAddpostDialog(),
+        child: const Icon(Icons.add),
       ),
-      pane: NavigationPane(displayMode: PaneDisplayMode.top),
-      content: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+      appBar: AppBar(
+        title: const Text("Windows Posts"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: ListView.builder(
           itemCount: posts.length,
           itemBuilder: (BuildContext context, int index) {
             final post = posts[index];
-            return SizedBox(
-              height: 150,
-              child: material.Card(
-                elevation: 5,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: ListTile(
-                    title: Text(
-                      post['title'],
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(post['body']),
+            return Card(
+              elevation: 5,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: ListTile(
+                  title: Text(
+                    post['title'],
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
+                  subtitle: Text(post['body']),
                 ),
               ),
             );
